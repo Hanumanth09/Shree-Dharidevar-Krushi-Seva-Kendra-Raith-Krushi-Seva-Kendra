@@ -1,0 +1,104 @@
+<!-- About Us Page Template -->
+<div class="view-animate">
+  
+  <section class="about-section">
+    <div class="about-grid">
+      
+      <!-- Left side: About Image Column -->
+      <div class="about-img-wrapper">
+        <img src="images/seeds-category.png" alt="High Quality Seeds" class="about-img">
+        <div class="about-img-card">
+          <h4>10+</h4>
+          <p>{{ t('ABOUT_EST') }} 2016</p>
+        </div>
+      </div>
+      
+      <!-- Right side: Information Content Column -->
+      <div class="about-info">
+        <span class="hero-badge" style="margin-bottom: 12px;">
+          <i class="fa-solid fa-circle-info"></i> {{ t('NAV_ABOUT') }}
+        </span>
+        <h2>{{ t('ABOUT_TITLE') }}</h2>
+        <p ng-if="lang === 'en'">
+          <strong>{{ $root.shopData.shopNameEn }} {{ $root.shopData.subEn }}</strong> was founded with a singular mission: to make premium quality agricultural inputs, fruit saplings, and scientific farming advice accessible to the hardworking farmers of Kanamadi and surrounding Vijayapura regions in Karnataka.
+        </p>
+        <p ng-if="lang === 'kn'">
+          ಕನಮಡಿ ಮತ್ತು ವಿಜಯಪುರ ಜಿಲ್ಲೆಯ ರೈತರಿಗೆ ಉತ್ತಮ ಗುಣಮಟ್ಟದ ಕೃಷಿ ಪರಿಕರಗಳು, ಹಣ್ಣಿನ ಸಸಿಗಳು ಮತ್ತು ವೈಜ್ಞಾನಿಕ ಕೃಷಿ ಸಲಹೆಗಳನ್ನು ಒದಗಿಸುವ ಏಕೈಕ ಉದ್ದೇಶದಿಂದ <strong>{{ $root.shopData.shopNameKn }} {{ $root.shopData.subKn }}</strong> ಅನ್ನು ಸ್ಥಾಪಿಸಲಾಯಿತು.
+        </p>
+        <p ng-if="lang === 'en'">
+          We understand that horticulture and agriculture are the backbone of our regional economy. Therefore, we supply only government-certified products, high-quality Bhagwa pomegranate saplings, and Dog Ridge grape rootstocks. Though our physical store is temporarily closed for renovation, our commitment to supporting you via online advisory remains stronger than ever.
+        </p>
+        <p ng-if="lang === 'kn'">{{ t('ABOUT_DESC_2') }}</p>
+        
+        <!-- Value Items Grid -->
+        <div class="about-values">
+          <div class="value-item">
+            <i class="fa-solid fa-circle-check"></i>
+            <div>
+              <h4>{{ t('ABOUT_VAL_QUALITY_TITLE') }}</h4>
+              <p>{{ t('ABOUT_VAL_QUALITY_DESC') }}</p>
+            </div>
+          </div>
+          <div class="value-item">
+            <i class="fa-solid fa-hands-holding-child"></i>
+            <div>
+              <h4>{{ t('ABOUT_VAL_TRUST_TITLE') }}</h4>
+              <p>{{ t('ABOUT_VAL_TRUST_DESC') }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </section>
+
+  <!-- Government Licenses & Compliance section -->
+  <section style="background-color: #f2f7f5; padding: 60px 24px; border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color);">
+    <div style="max-width: 1200px; margin: 0 auto;">
+      <div style="text-align: center; max-width: 700px; margin: 0 auto 40px;">
+        <h3 style="font-size: 1.75rem; margin-bottom: 12px; color: var(--primary-deep);">Certified & Licensed Inputs</h3>
+        <p style="color: var(--text-muted); font-size: 0.95rem;">
+          We operate strictly under statutory guidelines issued by the Department of Agriculture, Government of Karnataka. All seeds, fertilizers, and plant nutrients distributed by us are certified for safety and performance.
+        </p>
+      </div>
+      
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; text-align: center;">
+        
+        <!-- Cert 1 -->
+        <div style="background-color: var(--bg-card); padding: 30px; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+          <div style="font-size: 2.2rem; color: var(--primary-light); margin-bottom: 16px;">
+            <i class="fa-solid fa-shield-halved"></i>
+          </div>
+          <h4 style="margin-bottom: 8px;">Seed Distribution License</h4>
+          <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.5;">
+            Authorized dealer license for high-germination certified cereals, pulses, and oilseeds under Seed Control Order.
+          </p>
+        </div>
+        
+        <!-- Cert 2 -->
+        <div style="background-color: var(--bg-card); padding: 30px; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+          <div style="font-size: 2.2rem; color: var(--primary-light); margin-bottom: 16px;">
+            <i class="fa-solid fa-certificate"></i>
+          </div>
+          <h4 style="margin-bottom: 8px;">Fertilizer Sale Authorization</h4>
+          <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.5;">
+            Approved sales registrations for chemical, bio-fertilizers, and organic fertilizers from government-notified manufacturers.
+          </p>
+        </div>
+        
+        <!-- Cert 3 -->
+        <div style="background-color: var(--bg-card); padding: 30px; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+          <div style="font-size: 2.2rem; color: var(--primary-light); margin-bottom: 16px;">
+            <i class="fa-solid fa-file-invoice"></i>
+          </div>
+          <h4 style="margin-bottom: 8px;">B2B GST Registration</h4>
+          <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.5;">
+            Fully registered entity under Goods and Services Tax (GST) to facilitate legal bulk invoices for agricultural societies and retail depots.
+          </p>
+        </div>
+        
+      </div>
+    </div>
+  </section>
+
+</div>

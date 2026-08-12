@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="sevaKendraApp">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title ng-bind="(shopData.shopNameEn || 'Shree Dharidevar') + ' ' + (shopData.subEn || 'Raith Krushi Seva Kendra')">Shree Dharidevar Raith Krushi Seva Kendra</title>
+  <meta name="description" content="Empowering farmers of Kanamadi, Karnataka with premium seeds, fruit saplings, fertilizers, crop protection, and expert farming advisory.">
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Core Stylesheet -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body ng-controller="MainController" ng-class="{'lang-kn': lang === 'kn', 'lang-en': lang === 'en'}">
+
+  <!-- Header Navigation -->
+  <header class="header-wrapper">
+    <nav class="navbar" id="main-navbar">
+      
+      <!-- Brand Logo -->
+      <a href="#/" class="logo-container" ng-click="closeMenu()">
+        <div class="logo-icon">
+          <i class="fa-solid fa-seedling"></i>
+        </div>
+        <div class="logo-text">
+          <h1>{{ shopData.shopNameEn || t('BRAND_NAME') }}</h1>
+          <span>{{ shopData.subEn || t('BRAND_SUB') }}</span>
+        </div>
+      </a>
+      
+      <!-- Nav Links -->
+      <ul class="nav-links" ng-class="{'mobile-open': isMobileMenuOpen}">
+        <li><a href="#/" class="nav-item" ng-class="{active: isActive('/')}" ng-click="closeMenu()">{{ t('NAV_HOME') }}</a></li>
+        <li><a href="#/about" class="nav-item" ng-class="{active: isActive('/about')}" ng-click="closeMenu()">{{ t('NAV_ABOUT') }}</a></li>
+        <li><a href="#/products" class="nav-item" ng-class="{active: isActive('/products')}" ng-click="closeMenu()">{{ t('NAV_PRODUCTS') }}</a></li>
+        <li><a href="#/advisory" class="nav-item" ng-class="{active: isActive('/advisory')}" ng-click="closeMenu()">{{ t('NAV_ADVISORY') }}</a></li>
+        <li><a href="#/contact" class="nav-item" ng-class="{active: isActive('/contact')}" ng-click="closeMenu()">{{ t('NAV_CONTACT') }}</a></li>
+        <li>
+          <a href="#/admin" class="nav-item admin-nav-link" ng-class="{active: isActive('/admin')}" ng-click="closeMenu()">
+            <i class="fa-solid fa-user-shield"></i> {{ t('NAV_ADMIN') }}
+          </a>
+        </li>
+      </ul>
+      
+      <!-- Header Actions -->
+      <div class="nav-actions">
+        <!-- Language Switch Toggle -->
+        <div class="lang-switcher" ng-click="toggleLang()" title="Toggle Language / ಭಾಷೆಯನ್ನು ಬದಲಾಯಿಸಿ">
+          <div class="lang-slider"></div>
+          <div class="lang-btn" ng-class="{active: lang === 'en'}">EN</div>
+          <div class="lang-btn" ng-class="{active: lang === 'kn'}">ಕನ್ನಡ</div>
+        </div>
+        
+        <!-- Mobile Menu Toggle Button -->
+        <button class="menu-toggle" ng-click="toggleMobileMenu()" aria-label="Toggle navigation menu">
+          <i class="fa-solid" ng-class="isMobileMenuOpen ? 'fa-xmark' : 'fa-bars'"></i>
+        </button>
+      </div>
+      
+    </nav>
+  </header>
+
+  <!-- Dynamic Shop Status Bar (Managed via Admin Dashboard) -->
+  <div style="background-color: var(--primary-deep); color: white; padding: 10px 16px; text-align: center; font-size: 0.85rem; border-bottom: 2px solid var(--accent-gold); position: relative; z-index: 50; line-height: 1.6;">
+    <span class="hero-badge-closed" ng-style="{'background-color': shopData.isClosed ? 'rgba(239, 71, 111, 0.2)' : 'rgba(6, 214, 160, 0.2)', 'color': shopData.isClosed ? '#ef476f' : '#06d6a0', 'border-color': shopData.isClosed ? '#ef476f' : '#06d6a0'}" style="margin-left: 0; margin-right: 12px; display: inline-block;">
+      <i class="fa-solid" ng-class="shopData.isClosed ? 'fa-store-slash' : 'fa-store'"></i>
+      {{ shopData.isClosed ? t('TEMP_CLOSED') : 'Physical Store Open Today' }}
+    </span>
+    <span style="font-weight: 500; font-size: 0.85rem; opacity: 0.9;">
+      {{ lang === 'en' ? shopData.noticeEn : shopData.noticeKn }}
+    </span>
+    <a href="tel:{{ shopData.phone }}" style="color: var(--accent-gold); font-weight: 700; margin-left: 12px; text-decoration: underline; white-space: nowrap;">
+      <i class="fa-solid fa-phone"></i> {{ shopData.phone }}
+    </a>
+  </div>
+
+  <!-- Main Route Content Viewport -->
+  <main ng-view class="main-content view-animate"></main>
+
+  <!-- Footer Section -->
+  <footer class="footer">
+    <div class="footer-container">
+      
+      <!-- Footer Column 1: Brand Info -->
+      <div class="footer-brand">
+        <h2>{{ shopData.shopNameEn || t('BRAND_NAME') }}</h2>
+        <p>{{ shopData.subEn || t('BRAND_SUB') }}</p>
+        <p style="opacity: 0.7; font-size: 0.85rem; line-height: 1.5; max-width: 250px;">
+          Empowering agriculture with reliable supply of high-germination seeds, certified fruit saplings, organic fertilizers, and crop protection inputs.
+        </p>
+      </div>
+      
+      <!-- Footer Column 2: Navigation Links -->
+      <div class="footer-links">
+        <h3>{{ t('NAV_HOME') }} Links</h3>
+        <ul>
+          <li><a href="#/">{{ t('NAV_HOME') }}</a></li>
+          <li><a href="#/about">{{ t('NAV_ABOUT') }}</a></li>
+          <li><a href="#/products">{{ t('NAV_PRODUCTS') }}</a></li>
+          <li><a href="#/advisory">{{ t('NAV_ADVISORY') }}</a></li>
+          <li><a href="#/contact">{{ t('NAV_CONTACT') }}</a></li>
+          <li><a href="#/admin" style="color: var(--accent-gold); font-weight: 600;"><i class="fa-solid fa-user-shield"></i> {{ t('NAV_ADMIN') }}</a></li>
+        </ul>
+      </div>
+      
+      <!-- Footer Column 3: Contact Info -->
+      <div class="footer-contact">
+        <h3>{{ t('NAV_CONTACT') }}</h3>
+        <ul>
+          <li>
+            <i class="fa-solid fa-location-dot"></i>
+            <span>{{ shopData.addressEn }}</span>
+          </li>
+          <li>
+            <i class="fa-solid fa-phone"></i>
+            <a href="tel:{{ shopData.phone }}" style="color: inherit; font-weight: 600;">{{ shopData.phone }}</a>
+          </li>
+          <li>
+            <i class="fa-solid fa-envelope"></i>
+            <span>{{ shopData.email }}</span>
+          </li>
+        </ul>
+      </div>
+      
+      <!-- Footer Column 4: Opening Hours -->
+      <div class="footer-hours">
+        <h3>{{ t('CONTACT_HOURS') }}</h3>
+        <div class="hours-row">
+          <span>Operating Hours:</span>
+          <span>{{ shopData.hours }}</span>
+        </div>
+        <div style="margin-top: 16px; font-size: 0.8rem; color: var(--primary-light); display: flex; align-items: center; gap: 8px;">
+          <i class="fa-solid fa-circle-check"></i>
+          <span>Fruit Sapling & Soil Testing Active</span>
+        </div>
+      </div>
+      
+    </div>
+    
+    <!-- Footer Bottom Area -->
+    <div class="footer-bottom">
+      <p>&copy; 2026 {{ shopData.shopNameEn }}. All Rights Reserved.</p>
+      <p>Developed for the agricultural & fruit farming community of Kanamadi, Karnataka.</p>
+    </div>
+  </footer>
+
+  <!-- AngularJS CDNs -->
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular-route.min.js"></script>
+  
+  <!-- AngularJS App Logic -->
+  <script src="app.js"></script>
+
+</body>
+</html>

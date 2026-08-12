@@ -1,0 +1,128 @@
+<!-- Contact Us Page Template -->
+<div class="view-animate">
+  
+  <div class="contact-container">
+    
+    <!-- Top badge header -->
+    <div style="margin-bottom: 40px; text-align: center;">
+      <span class="hero-badge">
+        <i class="fa-solid fa-phone"></i> {{ t('NAV_CONTACT') }}
+      </span>
+      <h2 style="font-size: 2.25rem; margin-top: 12px;">{{ t('CONTACT_TITLE') }}</h2>
+      <p style="color: var(--text-muted); max-width: 600px; margin: 8px auto 0;">{{ t('CONTACT_DESC') }}</p>
+    </div>
+    
+    <div class="contact-grid">
+      
+      <!-- Left side: Location, Hours and Map -->
+      <div class="contact-card">
+        
+        <div class="contact-info-list">
+          
+          <!-- Address Item -->
+          <div class="contact-info-item">
+            <i class="fa-solid fa-location-dot"></i>
+            <div>
+              <h4>{{ t('CONTACT_LOC') }}</h4>
+              <p>{{ shopData.addressEn || $root.shopData.addressEn }}</p>
+            </div>
+          </div>
+          
+          <!-- Phone Item -->
+          <div class="contact-info-item">
+            <i class="fa-solid fa-phone-volume"></i>
+            <div>
+              <h4>{{ t('CONTACT_PHONE') }}</h4>
+              <p>
+                <a href="tel:{{ shopData.phone || $root.shopData.phone }}" style="color: inherit; font-weight: bold; font-size: 1.1rem; text-decoration: underline;">
+                  {{ shopData.phone || $root.shopData.phone }}
+                </a>
+              </p>
+            </div>
+          </div>
+          
+          <!-- Hours Item -->
+          <div class="contact-info-item">
+            <i class="fa-solid fa-clock"></i>
+            <div>
+              <h4>{{ t('CONTACT_HOURS') }}</h4>
+              <p>{{ shopData.hours || $root.shopData.hours }}</p>
+            </div>
+          </div>
+          
+        </div>
+        
+        <!-- Google Maps Embed -->
+        <div class="contact-map-wrapper">
+          <iframe 
+            src="https://maps.google.com/maps?q=Kanamadi,%20Karnataka,%20India&t=&z=14&ie=UTF8&iwloc=&output=embed" 
+            width="100%" 
+            height="250" 
+            style="border:0; vertical-align: middle;" 
+            allowfullscreen="" 
+            loading="lazy" 
+            referrerpolicy="no-referrer-when-downgrade">
+          </iframe>
+          <div style="background-color: var(--bg-main); padding: 14px 20px; border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-size: 0.8rem; color: var(--text-muted);"><i class="fa-solid fa-map-pin"></i> {{ shopData.addressEn || $root.shopData.addressEn }}</span>
+            <a ng-href="https://maps.google.com/?q={{ shopData.shopNameEn || $root.shopData.shopNameEn }}+Kanamadi" target="_blank" class="btn btn-text" style="font-size: 0.8rem; padding: 4px 8px;">
+              <i class="fa-solid fa-location-arrow"></i> {{ t('CONTACT_MAP_BTN') }}
+            </a>
+          </div>
+        </div>
+        
+      </div>
+      
+      <!-- Right side: Inquiry Form Panel -->
+      <div class="contact-form-panel">
+        <h3>Send an Inquiry / Order Request</h3>
+        <p>Fill out the fields to register a fruit sapling booking, bulk seed order, or request a consultation callback.</p>
+        
+        <!-- Success/Error Feedback Alerts -->
+        <div class="form-feedback" ng-if="feedback.show" ng-class="feedback.success ? 'feedback-success' : 'feedback-error'">
+          <i class="fa-solid" ng-class="feedback.success ? 'fa-circle-check' : 'fa-triangle-exclamation'"></i>
+          {{ t(feedback.textKey) }}
+        </div>
+        
+        <form name="contactForm" class="contact-form" ng-submit="submitForm(contactForm.$valid)" novalidate>
+          
+          <!-- Name Input -->
+          <div class="form-group">
+            <label for="contactName">{{ t('FORM_NAME') }} *</label>
+            <input type="text" id="contactName" name="name" ng-model="contact.name" required>
+            <span ng-show="contactForm.$submitted && contactForm.name.$error.required" style="color: var(--accent-terracotta); font-size: 0.75rem;">
+              Name is required.
+            </span>
+          </div>
+          
+          <!-- Phone Input -->
+          <div class="form-group">
+            <label for="contactPhone">{{ t('FORM_PHONE') }} *</label>
+            <input type="tel" id="contactPhone" name="phone" ng-model="contact.phone" pattern="^[0-9]{10}$" required>
+            <span ng-show="contactForm.$submitted && contactForm.phone.$error.required" style="color: var(--accent-terracotta); font-size: 0.75rem;">
+              Phone number is required.
+            </span>
+            <span ng-show="contactForm.$submitted && contactForm.phone.$error.pattern" style="color: var(--accent-terracotta); font-size: 0.75rem;">
+              Please enter a valid 10-digit phone number.
+            </span>
+          </div>
+          
+          <!-- Message Input -->
+          <div class="form-group">
+            <label for="contactMsg">{{ t('FORM_MSG') }}</label>
+            <textarea id="contactMsg" name="message" ng-model="contact.message" placeholder="Describe your requirement (e.g., Grape rootstocks, Bhagwa Pomegranate saplings, seeds, fertilizers)..."></textarea>
+          </div>
+          
+          <!-- Submit Button -->
+          <button type="submit" class="btn btn-primary" style="justify-content: center; width: 100%; margin-top: 10px;">
+            <i class="fa-solid fa-paper-plane"></i> {{ t('FORM_SUBMIT') }}
+          </button>
+          
+        </form>
+      </div>
+      
+    </div>
+    
+  </div>
+
+</div>

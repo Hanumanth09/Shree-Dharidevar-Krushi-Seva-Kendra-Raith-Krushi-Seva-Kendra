@@ -1,0 +1,146 @@
+<!-- Products Page Template -->
+<div class="view-animate">
+  
+  <div class="products-container">
+    
+    <!-- Catalog Top Filtering & Search Bar Header -->
+    <div class="catalog-header">
+      
+      <!-- Filter Chips -->
+      <div class="filter-chips">
+        <button class="filter-chip" ng-class="{active: activeCategory === 'ALL'}" ng-click="setCategory('ALL')">
+          {{ t('PROD_ALL') }}
+        </button>
+        <button class="filter-chip" ng-class="{active: activeCategory === 'SEEDS'}" ng-click="setCategory('SEEDS')">
+          {{ t('PROD_SEEDS') }}
+        </button>
+        <button class="filter-chip" ng-class="{active: activeCategory === 'FRUIT'}" ng-click="setCategory('FRUIT')">
+          {{ t('PROD_FRUIT') }}
+        </button>
+        <button class="filter-chip" ng-class="{active: activeCategory === 'FERT'}" ng-click="setCategory('FERT')">
+          {{ t('PROD_FERT') }}
+        </button>
+        <button class="filter-chip" ng-class="{active: activeCategory === 'PROT'}" ng-click="setCategory('PROT')">
+          {{ t('PROD_PROT') }}
+        </button>
+        <button class="filter-chip" ng-class="{active: activeCategory === 'EQUIP'}" ng-click="setCategory('EQUIP')">
+          {{ t('PROD_EQUIP') }}
+        </button>
+      </div>
+      
+      <!-- Search Bar -->
+      <div class="search-bar">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" ng-model="searchQuery" placeholder="{{ t('PROD_SEARCH_PLACEHOLDER') }}">
+      </div>
+      
+    </div>
+    
+    <!-- Catalog Header Titles -->
+    <div style="margin-bottom: 32px;">
+      <span class="hero-badge" style="margin-bottom: 12px;">
+        <i class="fa-solid fa-boxes-stacked"></i> {{ t('NAV_PRODUCTS') }}
+      </span>
+      <h2>{{ t('PROD_TITLE') }}</h2>
+    </div>
+
+    <!-- Products Grid -->
+    <div class="products-grid">
+      
+      <div class="product-card" ng-repeat="product in products | filter:filterProducts">
+        
+        <!-- Image & Top Badge -->
+        <div class="product-img-holder">
+          <img ng-src="{{ product.img }}" alt="{{ product.name }}">
+          <span class="product-badge" ng-if="product.badge">{{ product.badge }}</span>
+        </div>
+        
+        <!-- Product Card Body Info -->
+        <div class="product-details">
+          <span class="product-category">{{ t('PROD_' + product.category) }}</span>
+          <h3 class="product-title">{{ product.name }}</h3>
+          <p class="product-desc">{{ product.desc }}</p>
+          
+          <!-- Specifications Summary -->
+          <div class="product-spec">
+            <span class="spec-label">{{ t('PROD_PACK') }}:</span>
+            <span class="spec-val">{{ product.packaging }}</span>
+          </div>
+          
+          <!-- Action Button -->
+          <div class="product-action">
+            <button class="btn btn-secondary" ng-click="openDetails(product)">
+              <i class="fa-solid fa-circle-info"></i> {{ t('PROD_DETAILS') }}
+            </button>
+          </div>
+          
+        </div>
+        
+      </div>
+      
+    </div>
+    
+    <!-- No Results Placeholder -->
+    <div ng-if="(products | filter:filterProducts).length === 0" style="text-align: center; padding: 60px 24px; color: var(--text-muted);">
+      <div style="font-size: 3rem; margin-bottom: 16px;">
+        <i class="fa-solid fa-box-open"></i>
+      </div>
+      <h3>No products match your search.</h3>
+      <p>Try refining your filters or search keywords.</p>
+    </div>
+
+  </div>
+
+  <!-- Detailed Product Specifications Modal Popup Window -->
+  <div class="modal-overlay" ng-if="selectedProduct" ng-click="closeDetails()">
+    <div class="modal-content" ng-click="$event.stopPropagation()">
+      <button class="modal-close" ng-click="closeDetails()" aria-label="Close modal">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+      
+      <div class="modal-body">
+        <span class="product-category">{{ t('PROD_' + selectedProduct.category) }}</span>
+        <h3>{{ selectedProduct.name }}</h3>
+        
+        <p style="color: var(--text-dark); font-size: 1rem; margin-top: 16px; font-weight: 500;">
+          {{ selectedProduct.desc }}
+        </p>
+        
+        <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 24px 0;">
+        
+        <!-- Modal Section: Specifications -->
+        <div class="modal-section">
+          <h4><i class="fa-solid fa-box"></i> {{ t('PROD_PACK') }} Size</h4>
+          <p>{{ selectedProduct.packaging }}</p>
+        </div>
+        
+        <!-- Modal Section: Crop Compatibility -->
+        <div class="modal-section">
+          <h4><i class="fa-solid fa-plant-wilt"></i> {{ t('PROD_SPEC_COMP') }}</h4>
+          <p>{{ selectedProduct.compatibility }}</p>
+        </div>
+        
+        <!-- Modal Section: Usage Rules -->
+        <div class="modal-section">
+          <h4><i class="fa-solid fa-clipboard-list"></i> {{ t('PROD_SPEC_USAGE') }}</h4>
+          <p>{{ selectedProduct.usage }}</p>
+        </div>
+        
+        <!-- B2B Direct Ordering CTA -->
+        <div style="margin-top: 32px; background-color: rgba(255, 186, 8, 0.1); border: 1px solid var(--accent-gold); border-radius: var(--radius-md); padding: 20px; text-align: center;">
+          <h4 style="color: var(--primary-deep); margin-bottom: 8px; font-weight: bold;">
+            <i class="fa-solid fa-truck"></i> Bulk B2B Booking Available
+          </h4>
+          <p style="font-size: 0.85rem; color: var(--text-dark); margin-bottom: 12px;">
+            Need a bulk wholesale price quote for cooperations or sub-distribution?
+          </p>
+          <a href="tel:{{ shopData.phone }}" style="font-family: 'Outfit', sans-serif; font-size: 1.1rem; color: var(--primary-deep); font-weight: bold;">
+            <i class="fa-solid fa-phone"></i> Call: {{ shopData.phone }}
+          </a>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+
+</div>

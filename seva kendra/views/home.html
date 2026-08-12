@@ -1,0 +1,179 @@
+<!-- Home Page Template -->
+<div class="view-animate">
+  
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="hero-bg-overlay"></div>
+    <div class="hero-glow"></div>
+    <div class="hero-container">
+      
+      <!-- Left side: Hero Text Content -->
+      <div class="hero-content">
+        <div class="hero-badge">
+          <i class="fa-solid fa-star"></i> {{ t('HERO_BADGE') }}
+        </div>
+        <h2>{{ t('HERO_TITLE_PRE') }} <br><span>{{ t('HERO_TITLE_SPAN') }}</span></h2>
+        <p ng-if="lang === 'en'">Welcome to <strong>{{ $root.shopData.shopNameEn }} {{ $root.shopData.subEn }}</strong>. We supply high-yield seeds, certified Grapes &amp; Pomegranate saplings, bio-fertilizers, and eco-friendly crop protection directly to farmers of Kanamadi and regional distributors.</p>
+        <p ng-if="lang === 'kn'">{{ $root.shopData.shopNameKn }} {{ $root.shopData.subKn }}ಕ್ಕೆ ಸುಸ್ವಾಗತ. ನಾವು ಅಧಿಕ ಇಳುವರಿ ನೀಡುವ ಬೀಜಗಳು, ಪ್ರಮಾಣೀಕೃತ ದ್ರಾಕ್ಷಿ ಮತ್ತು ದಾಳಿಂಬೆ ಸಸಿಗಳು, ಜೈವಿಕ ಗೊಬ್ಬರ ಮತ್ತು ಕೀಟನಾಶಕಗಳನ್ನು ನೇರವಾಗಿ ಕನಮಡಿ ಸುತ್ತಮುತ್ತಲಿನ ರೈತರಿಗೆ ಪೂರೈಸುತ್ತೇವೆ.</p>
+        <div class="hero-actions">
+          <a href="#/advisory" class="btn btn-primary">
+            <i class="fa-solid fa-calculator"></i> {{ t('HERO_CTA_PRIMARY') }}
+          </a>
+          <a href="#/products" class="btn btn-secondary">
+            <i class="fa-solid fa-leaf"></i> {{ t('HERO_CTA_SECONDARY') }}
+          </a>
+        </div>
+      </div>
+      
+      <!-- Right side: Weather & Market Widget -->
+      <div class="hero-widget">
+        <div class="widget-panel">
+          
+          <!-- Weather Segment -->
+          <div class="widget-title">
+            <h3><i class="fa-solid fa-cloud-sun"></i> {{ t('WEATHER_TITLE') }}</h3>
+            <span>Live Data</span>
+          </div>
+          <div class="weather-info">
+            <div class="weather-temp">
+              <i class="fa-solid" ng-class="weather.temp > 25 ? 'fa-sun' : 'fa-cloud-moon'"></i>
+              <div class="temp-val">{{ weather.temp }}°C</div>
+            </div>
+            <div class="weather-details">
+              <div class="weather-condition">{{ weather.condition }}</div>
+              <div class="weather-loc">{{ t('WEATHER_LOC') }}</div>
+            </div>
+          </div>
+          <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 20px; font-style: italic;">
+            <i class="fa-solid fa-circle-info"></i> {{ t('WEATHER_DESC') }}
+          </p>
+          
+          <!-- Market Rates Segment -->
+          <div class="market-rates-title">
+            <i class="fa-solid fa-chart-line"></i> {{ t('MARKET_TITLE') }} <span style="font-size:0.65rem; color:var(--text-muted); font-weight:normal;">({{ t('MARKET_UNIT') }})</span>
+          </div>
+          <div class="market-rates-list">
+            <div class="market-item" ng-repeat="rate in marketRates">
+              <span class="market-name">{{ rate.name || t(rate.nameKey) }}</span>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span class="market-price">{{ rate.price }}</span>
+                <span class="market-trend" ng-class="{'trend-up': rate.trend === 'up', 'trend-down': rate.trend === 'down'}">
+                  <i class="fa-solid" ng-class="{'fa-caret-up': rate.trend === 'up', 'fa-caret-down': rate.trend === 'down', 'fa-minus': rate.trend === 'flat'}"></i>
+                  {{ rate.val !== '0' ? rate.val : '' }}
+                </span>
+              </div>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
+    </div>
+  </section>
+
+  <!-- Stats Bar -->
+  <section class="stats-bar">
+    <div class="stats-container">
+      <div class="stat-item">
+        <h3>{{ t('STATS_FARMERS') }}</h3>
+        <p>{{ t('STATS_FARMERS_LABEL') }}</p>
+      </div>
+      <div class="stat-item">
+        <h3>{{ t('STATS_YEARS') }}</h3>
+        <p>{{ t('STATS_YEARS_LABEL') }}</p>
+      </div>
+      <div class="stat-item">
+        <h3>{{ t('STATS_VILLAGES') }}</h3>
+        <p>{{ t('STATS_VILLAGES_LABEL') }}</p>
+      </div>
+      <div class="stat-item">
+        <h3>{{ t('STATS_SATISFACTION') }}</h3>
+        <p>{{ t('STATS_SATISFACTION_LABEL') }}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="features-section">
+    <div class="section-header">
+      <h2>{{ t('FEATURES_TITLE') }}</h2>
+      <p>{{ t('FEATURES_SUB') }}</p>
+    </div>
+    
+    <div class="features-grid">
+      <!-- Feature 1 -->
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fa-solid fa-seedling"></i>
+        </div>
+        <h3>{{ t('FEAT1_TITLE') }}</h3>
+        <p>{{ t('FEAT1_DESC') }}</p>
+      </div>
+      <!-- Feature 2 -->
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fa-solid fa-flask"></i>
+        </div>
+        <h3>{{ t('FEAT2_TITLE') }}</h3>
+        <p>{{ t('FEAT2_DESC') }}</p>
+      </div>
+      <!-- Feature 3 -->
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fa-solid fa-truck-ramp-box"></i>
+        </div>
+        <h3>{{ t('FEAT3_TITLE') }}</h3>
+        <p>{{ t('FEAT3_DESC') }}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Grapes & Pomegranate Horticulture Spotlight Section -->
+  <section style="padding: 0 16px; margin-bottom: 60px;">
+    <div style="max-width: 1200px; margin: 0 auto; background: linear-gradient(135deg, rgba(15, 76, 129, 0.95), rgba(10, 47, 80, 0.98)); background-size: cover; background-position: center; border-radius: var(--radius-lg); padding: 32px 24px; color: white; border: 1px solid rgba(255, 255, 255, 0.15); box-shadow: 0 20px 40px rgba(0,0,0,0.2);">
+      <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 24px;">
+        <div style="max-width: 650px; min-width: 0; flex: 1;">
+          <span class="hero-badge" style="background: rgba(255, 186, 8, 0.2); color: var(--accent-gold); border-color: rgba(255, 186, 8, 0.4); margin-bottom: 12px;">
+            <i class="fa-solid fa-wine-glass-stripe"></i> Kanamadi Horticulture Hub
+          </span>
+          <h2 style="font-size: clamp(1.4rem, 4vw, 2rem); font-weight: 700; margin-bottom: 12px; color: white;">
+            Specialized Grapes &amp; Pomegranate Crop Solutions
+          </h2>
+          <p style="font-size: 0.95rem; opacity: 0.9; line-height: 1.6; margin-bottom: 20px;">
+            Get certified Bhagwa Pomegranate tissue culture saplings, Dog Ridge Grape rootstocks, GA3 growth boosters, and specialized fertigation charts tailored for Kanamadi soil.
+          </p>
+          <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+            <a href="#/products" class="btn btn-primary" style="font-size: 0.9rem;">
+              <i class="fa-solid fa-boxes-stacked"></i> Browse Fruit Saplings &amp; Inputs
+            </a>
+            <a href="#/advisory" class="btn btn-secondary" style="font-size: 0.9rem; color: white; border-color: rgba(255,255,255,0.4);">
+              <i class="fa-solid fa-calculator"></i> Fruit Crop Calculator
+            </a>
+          </div>
+        </div>
+        <div style="background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); padding: 20px 24px; border-radius: var(--radius-md); border: 1px solid rgba(255,255,255,0.2); text-align: center; min-width: 180px; flex-shrink: 0;">
+          <div style="font-size: 2rem; color: var(--accent-gold); margin-bottom: 4px;">🍇 🍎</div>
+          <h4 style="margin: 0; font-size: 1rem; color: white;">100% Certified</h4>
+          <span style="font-size: 0.78rem; opacity: 0.8;">Tissue Culture &amp; Grafted Rootstocks</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive Call to Action Banner -->
+  <section style="padding: 0 24px; margin-bottom: 80px;">
+    <div class="cta-banner">
+      <div class="cta-banner-bg"></div>
+      <div class="cta-content">
+        <h2>{{ t('CTA_TITLE') }}</h2>
+        <p>{{ t('CTA_DESC') }}</p>
+      </div>
+      <div class="cta-actions">
+        <a href="#/advisory" class="btn btn-primary">
+          <i class="fa-solid fa-calculator"></i> {{ t('CTA_BTN') }}
+        </a>
+      </div>
+    </div>
+  </section>
+
+</div>

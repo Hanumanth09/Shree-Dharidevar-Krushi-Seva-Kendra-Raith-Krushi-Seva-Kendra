@@ -1,0 +1,541 @@
+<!-- Admin Dashboard Page Template -->
+<div class="view-animate">
+
+  <!-- Security PIN Authentication (Shown if not logged in) -->
+  <div ng-if="!isAdminLoggedIn" style="min-height: 80vh; display: flex; align-items: center; justify-content: center; padding: 24px;">
+    <div class="admin-login-card" style="background: white; border-radius: 16px; padding: 40px; max-width: 420px; width: 100%; box-shadow: 0 20px 40px rgba(0,0,0,0.12); border: 1px solid #e2ede8;">
+      <div class="admin-login-header">
+        <div class="admin-lock-icon">
+          <i class="fa-solid fa-user-shield"></i>
+        </div>
+        <h2>Shop Admin Access</h2>
+        <p>Enter your security PIN to access the dashboard</p>
+      </div>
+
+      <div class="form-group" style="margin-bottom: 20px;">
+        <label><i class="fa-solid fa-key"></i> Security PIN Code</label>
+        <input type="password" ng-model="admin.pin" placeholder="Enter your PIN" class="admin-pin-input" style="width:100%; padding:12px 16px; border:1px solid #e2ede8; border-radius:12px; font-size:1rem; letter-spacing:4px; text-align:center; outline:none;">
+      </div>
+
+      <div ng-show="loginError" style="background:rgba(239,71,111,0.12); color:#ef476f; border:1px solid rgba(239,71,111,0.3); padding:10px 14px; border-radius:8px; font-size:0.85rem; margin-bottom:12px; text-align:center;">
+        <i class="fa-solid fa-triangle-exclamation"></i> Incorrect PIN. Please try again.
+      </div>
+
+      <button ng-click="loginAdmin()" style="width:100%; padding:14px; background:#0c3b2e; color:white; border:none; border-radius:12px; font-size:1rem; font-weight:700; cursor:pointer; margin-top:4px;">
+        <i class="fa-solid fa-right-to-bracket"></i> Login to Admin Dashboard
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Admin Dashboard View (Shown when logged in) -->
+  <div class="admin-container" ng-if="isAdminLoggedIn">
+
+    <!-- Admin Header Banner -->
+    <div class="admin-header-bar">
+      <div class="admin-title-area">
+        <span class="hero-badge" style="background: rgba(239, 71, 111, 0.15); color: #ef476f; border-color: rgba(239, 71, 111, 0.3);">
+          <i class="fa-solid fa-shield-halved"></i> Authorized Admin Access
+        </span>
+        <h2>{{ shopData.shopNameEn }} - Control Panel</h2>
+        <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 4px;">
+          Manage products, store status, market prices, and view customer enquiries in real-time.
+        </p>
+      </div>
+
+      <div class="admin-actions-area">
+        <button class="btn btn-secondary" ng-click="saveData()" style="background: rgba(6, 214, 160, 0.15); color: #06d6a0; border-color: rgba(6, 214, 160, 0.4);">
+          <i class="fa-solid fa-floppy-disk"></i> {{ saveSuccess ? 'Saved!' : 'Save All Changes' }}
+        </button>
+        <button class="btn btn-secondary" ng-click="logoutAdmin()" title="Logout Admin Session">
+          <i class="fa-solid fa-right-from-bracket"></i> Logout
+        </button>
+      </div>
+    </div>
+
+    <!-- Quick Stats Cards -->
+    <div class="admin-stats-grid">
+      <div class="admin-stat-card">
+        <div class="stat-icon-wrap" style="background: rgba(15, 76, 129, 0.1); color: var(--primary-deep);">
+          <i class="fa-solid fa-boxes-stacked"></i>
+        </div>
+        <div class="stat-info">
+          <div class="stat-number">{{ products.length }}</div>
+          <div class="stat-label">Total Products in Store</div>
+        </div>
+      </div>
+
+      <div class="admin-stat-card">
+        <div class="stat-icon-wrap" style="background: rgba(255, 186, 8, 0.15); color: #d97706;">
+          <i class="fa-solid fa-envelope-open-text"></i>
+        </div>
+        <div class="stat-info">
+          <div class="stat-number">{{ enquiries.length }}</div>
+          <div class="stat-label">Customer Enquiries</div>
+        </div>
+      </div>
+
+      <div class="admin-stat-card">
+        <div class="stat-icon-wrap" style="background: rgba(74, 163, 223, 0.15); color: #0284c7;">
+          <i class="fa-solid fa-chart-line"></i>
+        </div>
+        <div class="stat-info">
+          <div class="stat-number">{{ marketRates.length }}</div>
+          <div class="stat-label">Tracked Market Rates</div>
+        </div>
+      </div>
+
+      <div class="admin-stat-card">
+        <div class="stat-icon-wrap" ng-style="{'background': shopData.isClosed ? 'rgba(239, 71, 111, 0.15)' : 'rgba(6, 214, 160, 0.15)', 'color': shopData.isClosed ? '#ef476f' : '#06d6a0'}">
+          <i class="fa-solid" ng-class="shopData.isClosed ? 'fa-store-slash' : 'fa-store'"></i>
+        </div>
+        <div class="stat-info">
+          <div class="stat-number" style="font-size: 1.1rem; text-transform: uppercase;">
+            {{ shopData.isClosed ? 'Temp Closed' : 'Store Open' }}
+          </div>
+          <div class="stat-label">Physical Store Status</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Admin Navigation Tabs -->
+    <div class="admin-tabs-bar">
+      <button class="admin-tab-btn" ng-class="{active: activeTab === 'shop'}" ng-click="setTab('shop')">
+        <i class="fa-solid fa-store"></i> Shop Info & Status
+      </button>
+      <button class="admin-tab-btn" ng-class="{active: activeTab === 'products'}" ng-click="setTab('products')">
+        <i class="fa-solid fa-boxes-packing"></i> Products Catalog ({{ products.length }})
+      </button>
+      <button class="admin-tab-btn" ng-class="{active: activeTab === 'market'}" ng-click="setTab('market')">
+        <i class="fa-solid fa-chart-pie"></i> Mandi Market Rates
+      </button>
+      <button class="admin-tab-btn" ng-class="{active: activeTab === 'enquiries'}" ng-click="setTab('enquiries')">
+        <i class="fa-solid fa-messages"></i> Enquiries & Orders ({{ enquiries.length }})
+      </button>
+      <button class="admin-tab-btn" ng-class="{active: activeTab === 'settings'}" ng-click="setTab('settings')">
+        <i class="fa-solid fa-gears"></i> Security & Backup
+      </button>
+    </div>
+
+    <!-- TAB 1: SHOP INFORMATION & STATUS MANAGER -->
+    <div class="admin-tab-content" ng-if="activeTab === 'shop'">
+      <div class="admin-panel-card">
+        <h3><i class="fa-solid fa-pen-to-square"></i> General Shop Settings & Store Status</h3>
+        <p class="panel-desc">Update shop name, contact details, operating status, and top notification alerts displayed to visitors.</p>
+
+        <form ng-submit="saveData()">
+          <div class="admin-form-grid">
+            <!-- Physical Store Status Toggle -->
+            <div class="form-group form-group-full" style="background: rgba(255, 255, 255, 0.05); padding: 18px; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+              <label style="font-weight: 700; font-size: 1.05rem; display: flex; align-items: center; justify-content: space-between;">
+                <span><i class="fa-solid fa-door-open"></i> Physical Store Operating Status</span>
+                <span class="status-pill-badge" ng-class="shopData.isClosed ? 'status-closed' : 'status-open'">
+                  {{ shopData.isClosed ? 'TEMPORARILY CLOSED' : 'STORE OPEN FOR FARMERS' }}
+                </span>
+              </label>
+              <div style="margin-top: 10px; display: flex; align-items: center; gap: 16px;">
+                <button type="button" class="btn" ng-class="shopData.isClosed ? 'btn-danger' : 'btn-secondary'" ng-click="shopData.isClosed = !shopData.isClosed">
+                  <i class="fa-solid" ng-class="shopData.isClosed ? 'fa-toggle-off' : 'fa-toggle-on'"></i>
+                  Toggle Status to: {{ shopData.isClosed ? 'Open Physical Store' : 'Mark Store as Temporarily Closed' }}
+                </button>
+                <span style="font-size: 0.85rem; color: var(--text-muted);">
+                  (Appears on top notification bar across all website pages)
+                </span>
+              </div>
+            </div>
+
+            <!-- Shop Name EN -->
+            <div class="form-group">
+              <label for="shopNameEn">Shop Name (English)</label>
+              <input type="text" id="shopNameEn" ng-model="shopData.shopNameEn" required>
+            </div>
+
+            <!-- Shop Name KN -->
+            <div class="form-group">
+              <label for="shopNameKn">Shop Name (Kannada / ಕನ್ನಡ)</label>
+              <input type="text" id="shopNameKn" ng-model="shopData.shopNameKn" required>
+            </div>
+
+            <!-- Phone Number -->
+            <div class="form-group">
+              <label for="phone"><i class="fa-solid fa-phone"></i> Contact Phone / WhatsApp</label>
+              <input type="text" id="phone" ng-model="shopData.phone" required>
+            </div>
+
+            <!-- Email -->
+            <div class="form-group">
+              <label for="email"><i class="fa-solid fa-envelope"></i> Support Email</label>
+              <input type="email" id="email" ng-model="shopData.email" required>
+            </div>
+
+            <!-- Operating Hours -->
+            <div class="form-group form-group-full">
+              <label for="hours"><i class="fa-solid fa-clock"></i> Business Operating Hours</label>
+              <input type="text" id="hours" ng-model="shopData.hours" required>
+            </div>
+
+            <!-- Address EN -->
+            <div class="form-group form-group-full">
+              <label for="addressEn">Shop Address (English)</label>
+              <input type="text" id="addressEn" ng-model="shopData.addressEn" required>
+            </div>
+
+            <!-- Top Notice Banner EN -->
+            <div class="form-group form-group-full">
+              <label for="noticeEn"><i class="fa-solid fa-bullhorn"></i> Top Announcement Banner Notice (English)</label>
+              <textarea id="noticeEn" rows="2" ng-model="shopData.noticeEn"></textarea>
+            </div>
+
+            <!-- Top Notice Banner KN -->
+            <div class="form-group form-group-full">
+              <label for="noticeKn"><i class="fa-solid fa-bullhorn"></i> Top Announcement Banner Notice (Kannada / ಕನ್ನಡ)</label>
+              <textarea id="noticeKn" rows="2" ng-model="shopData.noticeKn"></textarea>
+            </div>
+          </div>
+
+          <div style="margin-top: 24px; text-align: right;">
+            <button type="submit" class="btn btn-primary">
+              <i class="fa-solid fa-floppy-disk"></i> Save Shop Settings
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- TAB 2: PRODUCTS CATALOG MANAGER (CRUD) -->
+    <div class="admin-tab-content" ng-if="activeTab === 'products'">
+      <div class="admin-panel-card">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-bottom: 24px;">
+          <div>
+            <h3><i class="fa-solid fa-boxes-stacked"></i> Shop Products & Inputs Management</h3>
+            <p class="panel-desc">Add new seeds, fertilizers, fruit saplings, equipment or edit existing inventory items.</p>
+          </div>
+          <button class="btn btn-primary" ng-click="openAddProductModal()">
+            <i class="fa-solid fa-circle-plus"></i> Add New Product
+          </button>
+        </div>
+
+        <!-- Filter Bar -->
+        <div class="catalog-header" style="margin-bottom: 24px;">
+          <div class="filter-chips">
+            <button class="filter-chip" ng-class="{active: prodCategoryFilter === 'ALL'}" ng-click="setProdCategoryFilter('ALL')">All ({{ products.length }})</button>
+            <button class="filter-chip" ng-class="{active: prodCategoryFilter === 'SEEDS'}" ng-click="setProdCategoryFilter('SEEDS')">Seeds</button>
+            <button class="filter-chip" ng-class="{active: prodCategoryFilter === 'FRUIT'}" ng-click="setProdCategoryFilter('FRUIT')">Fruit Crops & Saplings</button>
+            <button class="filter-chip" ng-class="{active: prodCategoryFilter === 'FERT'}" ng-click="setProdCategoryFilter('FERT')">Fertilizers</button>
+            <button class="filter-chip" ng-class="{active: prodCategoryFilter === 'PROT'}" ng-click="setProdCategoryFilter('PROT')">Protection</button>
+            <button class="filter-chip" ng-class="{active: prodCategoryFilter === 'EQUIP'}" ng-click="setProdCategoryFilter('EQUIP')">Equipment</button>
+          </div>
+        </div>
+
+        <!-- Products Table -->
+        <div class="admin-table-wrapper">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Image</th>
+                <th>Product Name</th>
+                <th>Category</th>
+                <th>Packaging</th>
+                <th>Badge</th>
+                <th style="text-align: right;">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="p in products | filter:adminFilterProducts">
+                <td>#{{ p.id }}</td>
+                <td>
+                  <img ng-src="{{ p.img }}" alt="{{ p.name }}" class="admin-table-img">
+                </td>
+                <td style="font-weight: 600;">{{ p.name }}</td>
+                <td>
+                  <span class="category-badge cat-{{ p.category }}">{{ p.category }}</span>
+                </td>
+                <td>{{ p.packaging }}</td>
+                <td>
+                  <span class="product-badge" ng-if="p.badge" style="position: static; display: inline-block;">{{ p.badge }}</span>
+                  <span ng-if="!p.badge" style="color: var(--text-muted); font-size: 0.8rem;">-</span>
+                </td>
+                <td style="text-align: right;">
+                  <button class="btn-icon btn-icon-edit" ng-click="openEditProductModal(p)" title="Edit Product">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                  </button>
+                  <button class="btn-icon btn-icon-delete" ng-click="deleteProduct(p.id)" title="Delete Product">
+                    <i class="fa-solid fa-trash-can"></i>
+                  </button>
+                </td>
+              </tr>
+              <tr ng-if="(products | filter:adminFilterProducts).length === 0">
+                <td colspan="7" style="text-align: center; padding: 30px; color: var(--text-muted);">
+                  No products found matching the selected filter.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- TAB 3: LIVE MANDI MARKET RATES MANAGER -->
+    <div class="admin-tab-content" ng-if="activeTab === 'market'">
+      <div class="admin-panel-card">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-bottom: 24px;">
+          <div>
+            <h3><i class="fa-solid fa-chart-line"></i> Mandi Market Rate Manager</h3>
+            <p class="panel-desc">Update daily agricultural crop rates for Vijayapura / Kanamadi region (Grapes, Pomegranates, Cotton, Maize, Jowar, Sugarcane).</p>
+          </div>
+          <button class="btn btn-secondary" ng-click="addNewMarketRate()">
+            <i class="fa-solid fa-plus"></i> Add New Crop Rate
+          </button>
+        </div>
+
+        <div class="admin-table-wrapper">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Crop Name</th>
+                <th>Current Price (₹)</th>
+                <th>Trend Direction</th>
+                <th>Change Value</th>
+                <th style="text-align: right;">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="rate in marketRates">
+                <td>
+                  <input type="text" ng-model="rate.name" class="admin-inline-input" placeholder="Crop Name (e.g. Grapes)">
+                </td>
+                <td>
+                  <input type="text" ng-model="rate.price" class="admin-inline-input" placeholder="e.g. ₹ 8,500 / Quintal">
+                </td>
+                <td>
+                  <select ng-model="rate.trend" class="admin-inline-select">
+                    <option value="up">📈 Price Increasing (Up)</option>
+                    <option value="down">📉 Price Decreasing (Down)</option>
+                    <option value="flat">➖ Stable (Flat)</option>
+                  </select>
+                </td>
+                <td>
+                  <input type="text" ng-model="rate.val" class="admin-inline-input" placeholder="e.g. +₹150">
+                </td>
+                <td style="text-align: right;">
+                  <button class="btn-icon btn-icon-delete" ng-click="deleteMarketRate($index)" title="Remove Rate">
+                    <i class="fa-solid fa-trash-can"></i>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div style="margin-top: 24px; text-align: right;">
+          <button class="btn btn-primary" ng-click="saveData()">
+            <i class="fa-solid fa-floppy-disk"></i> Update Market Rates
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 4: CUSTOMER ENQUIRIES & B2B REQUESTS -->
+    <div class="admin-tab-content" ng-if="activeTab === 'enquiries'">
+      <div class="admin-panel-card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+          <div>
+            <h3><i class="fa-solid fa-comments"></i> Customer Enquiries & B2B Orders</h3>
+            <p class="panel-desc">Messages submitted by local farmers and B2B buyers through the Contact Us form.</p>
+          </div>
+          <button class="btn btn-secondary" ng-click="clearAllEnquiries()" ng-if="enquiries.length > 0" style="color: #ef476f; border-color: rgba(239, 71, 111, 0.4);">
+            <i class="fa-solid fa-broom"></i> Clear All Enquiries
+          </button>
+        </div>
+
+        <div class="admin-enquiries-list" ng-if="enquiries.length > 0">
+          <div class="enquiry-card" ng-repeat="eq in enquiries track by $index" ng-class="{'enquiry-done': eq.status === 'Followed Up'}">
+            <div class="enquiry-header">
+              <div class="enquiry-user">
+                <i class="fa-solid fa-user-circle" style="font-size: 1.5rem; color: var(--accent-gold);"></i>
+                <div>
+                  <h4 style="margin: 0; font-size: 1.05rem;">{{ eq.name }}</h4>
+                  <span style="font-size: 0.8rem; color: var(--text-muted);">
+                    <i class="fa-solid fa-clock"></i> {{ eq.date || 'Recently' }}
+                  </span>
+                </div>
+              </div>
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <span class="status-pill-badge" ng-class="eq.status === 'Followed Up' ? 'status-open' : 'status-pending'">
+                  {{ eq.status || 'Pending' }}
+                </span>
+                <button class="btn-icon btn-icon-edit" ng-click="toggleEnquiryStatus(eq)" title="Toggle Status">
+                  <i class="fa-solid" ng-class="eq.status === 'Followed Up' ? 'fa-rotate-left' : 'fa-check'"></i>
+                </button>
+                <button class="btn-icon btn-icon-delete" ng-click="deleteEnquiry($index)" title="Delete Enquiry">
+                  <i class="fa-solid fa-trash-can"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="enquiry-body">
+              <div style="margin-bottom: 8px;">
+                <strong style="color: var(--primary-deep);"><i class="fa-solid fa-phone"></i> Phone:</strong>
+                <a href="tel:{{ eq.phone }}" style="font-weight: 700; color: var(--accent-gold); text-decoration: underline; margin-left: 6px;">{{ eq.phone }}</a>
+              </div>
+              <div style="font-size: 0.95rem; color: var(--text-dark); background: rgba(0, 0, 0, 0.03); padding: 12px; border-radius: var(--radius-sm);">
+                {{ eq.message || 'No message text provided.' }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div ng-if="enquiries.length === 0" style="text-align: center; padding: 60px 24px; color: var(--text-muted);">
+          <div style="font-size: 3rem; margin-bottom: 12px; opacity: 0.5;">
+            <i class="fa-solid fa-inbox"></i>
+          </div>
+          <h3>No customer enquiries yet</h3>
+          <p>When farmers submit questions or order requests through the contact form, they will appear here.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 5: SECURITY & DATA BACKUP -->
+    <div class="admin-tab-content" ng-if="activeTab === 'settings'">
+      <div class="admin-panel-card">
+        <h3><i class="fa-solid fa-shield-halved"></i> Security & System Data Maintenance</h3>
+        <p class="panel-desc">Change your security PIN code and manage local application data backups.</p>
+
+        <!-- Change PIN Form -->
+        <form ng-submit="changePin()" style="max-width: 500px; margin-bottom: 40px; background: rgba(0,0,0,0.03); padding: 20px; border-radius: var(--radius-md);">
+          <h4 style="margin-bottom: 16px;"><i class="fa-solid fa-key"></i> Change Admin Access PIN</h4>
+
+          <div class="form-group" style="margin-bottom: 16px;">
+            <label for="newPin">New Security PIN Code</label>
+            <input type="password" id="newPin" ng-model="pinForm.newPin" placeholder="Enter new PIN" required>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 20px;">
+            <label for="confirmPin">Confirm New PIN Code</label>
+            <input type="password" id="confirmPin" ng-model="pinForm.confirmPin" placeholder="Confirm new PIN" required>
+          </div>
+
+          <div ng-if="pinSuccessMsg" class="admin-success-alert">
+            <i class="fa-solid fa-circle-check"></i> {{ pinSuccessMsg }}
+          </div>
+          <div ng-if="pinErrMsg" class="admin-error-alert">
+            <i class="fa-solid fa-triangle-exclamation"></i> {{ pinErrMsg }}
+          </div>
+
+          <button type="submit" class="btn btn-primary">
+            <i class="fa-solid fa-lock"></i> Update Admin PIN
+          </button>
+        </form>
+
+        <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 30px 0;">
+
+        <!-- Danger Zone: Factory Reset -->
+        <div style="background: rgba(239, 71, 111, 0.08); border: 1px solid rgba(239, 71, 111, 0.3); padding: 24px; border-radius: var(--radius-md);">
+          <h4 style="color: #ef476f; margin-bottom: 8px;"><i class="fa-solid fa-triangle-exclamation"></i> Danger Zone: Reset All Shop Data</h4>
+          <p style="font-size: 0.88rem; color: var(--text-dark); margin-bottom: 16px;">
+            Resetting shop data will clear all custom product additions, market rate changes, and restore original factory defaults.
+          </p>
+          <button class="btn btn-danger" ng-click="resetToDefaults()">
+            <i class="fa-solid fa-rotate"></i> Reset All Data to Factory Defaults
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ADD / EDIT PRODUCT MODAL POPUP -->
+  <div class="modal-overlay" ng-if="showProductModal" ng-click="closeProductModal()">
+    <div class="modal-content" ng-click="$event.stopPropagation()" style="max-width: 650px;">
+      <button class="modal-close" ng-click="closeProductModal()" aria-label="Close modal">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="modal-body">
+        <h3 style="margin-bottom: 6px;">
+          <i class="fa-solid" ng-class="editingProduct.id ? 'fa-pen-to-square' : 'fa-circle-plus'"></i>
+          {{ editingProduct.id ? 'Edit Product' : 'Add New Agricultural Product' }}
+        </h3>
+        <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 20px;">
+          Fill in product parameters to showcase to farmers in Kanamadi and regional buyers.
+        </p>
+
+        <form ng-submit="saveProduct()">
+          <div class="admin-form-grid">
+
+            <div class="form-group form-group-full">
+              <label for="prodName">Product Name *</label>
+              <input type="text" id="prodName" ng-model="editingProduct.name" placeholder="e.g. Bhagwa Pomegranate Saplings" required>
+            </div>
+
+            <div class="form-group">
+              <label for="prodCat">Product Category *</label>
+              <select id="prodCat" ng-model="editingProduct.category" required>
+                <option value="SEEDS">Seeds (ಬೀಜಗಳು)</option>
+                <option value="FRUIT">Fruit Crops & Saplings (ಹಣ್ಣಿನ ಸಸಿಗಳು)</option>
+                <option value="FERT">Fertilizers (ರಸಗೊಬ್ಬರಗಳು)</option>
+                <option value="PROT">Crop Protection (ಬೆಳೆ ಸಂರಕ್ಷಣೆ)</option>
+                <option value="EQUIP">Equipment (ಉಪಕರಣಗಳು)</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="prodPack">Packaging Size *</label>
+              <input type="text" id="prodPack" ng-model="editingProduct.packaging" placeholder="e.g. 100 Saplings Bundle / 50 kg Sack" required>
+            </div>
+
+            <div class="form-group">
+              <label for="prodBadge">Highlight Badge (Optional)</label>
+              <input type="text" id="prodBadge" ng-model="editingProduct.badge" placeholder="e.g. Best Seller, Organic, Fruit Special">
+            </div>
+
+            <div class="form-group form-group-full">
+              <label for="prodImg"><i class="fa-solid fa-image"></i> Product Image URL *</label>
+              <input type="text" id="prodImg" ng-model="editingProduct.img" placeholder="Paste image URL here (e.g. https://... or images/fruit-category.png)" required style="margin-bottom: 10px;">
+              <!-- Live Preview -->
+              <div ng-if="editingProduct.img" style="margin-bottom: 10px; display: flex; align-items: center; gap: 12px; background: rgba(0,0,0,0.04); padding: 10px; border-radius: 8px; border: 1px solid var(--border-color);">
+                <img ng-src="{{ editingProduct.img }}" alt="Preview" style="width: 64px; height: 64px; object-fit: cover; border-radius: 8px; border: 1px solid var(--border-color);" onerror="this.src='images/fruit-category.png'">
+                <span style="font-size: 0.8rem; color: var(--text-muted); word-break: break-all;">{{ editingProduct.img }}</span>
+              </div>
+              <!-- Quick Preset Buttons -->
+              <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                <span style="font-size: 0.78rem; color: var(--text-muted); width: 100%; margin-bottom: 2px;">Quick presets:</span>
+                <button type="button" class="filter-chip" style="font-size: 0.78rem; padding: 4px 10px;" ng-click="editingProduct.img = 'images/fruit-category.png'">🍇 Fruit / Saplings</button>
+                <button type="button" class="filter-chip" style="font-size: 0.78rem; padding: 4px 10px;" ng-click="editingProduct.img = 'images/seeds-category.png'">🌱 Seeds</button>
+                <button type="button" class="filter-chip" style="font-size: 0.78rem; padding: 4px 10px;" ng-click="editingProduct.img = 'images/fertilizers-category.png'">🧪 Fertilizers</button>
+                <button type="button" class="filter-chip" style="font-size: 0.78rem; padding: 4px 10px;" ng-click="editingProduct.img = 'images/equipment-category.png'">🚜 Equipment</button>
+              </div>
+            </div>
+
+            <div class="form-group form-group-full">
+              <label for="prodDesc">Product Description *</label>
+              <textarea id="prodDesc" rows="3" ng-model="editingProduct.desc" placeholder="Provide detailed benefits, germination rate, crop suitability..." required></textarea>
+            </div>
+
+            <div class="form-group form-group-full">
+              <label for="prodComp">Compatible Crops *</label>
+              <input type="text" id="prodComp" ng-model="editingProduct.compatibility" placeholder="e.g. Grapes, Pomegranate, Sugarcane, All Soils" required>
+            </div>
+
+            <div class="form-group form-group-full">
+              <label for="prodUsage">Usage Guidelines & Dosage *</label>
+              <textarea id="prodUsage" rows="2" ng-model="editingProduct.usage" placeholder="e.g. Apply 100g per sapling during planting, or via drip fertigation..." required></textarea>
+            </div>
+
+          </div>
+
+          <div style="margin-top: 24px; text-align: right; display: flex; justify-content: flex-end; gap: 12px;">
+            <button type="button" class="btn btn-secondary" ng-click="closeProductModal()">Cancel</button>
+            <button type="submit" class="btn btn-primary">
+              <i class="fa-solid fa-check"></i> {{ editingProduct.id ? 'Save Changes' : 'Create Product' }}
+            </button>
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </div>
+
+</div>

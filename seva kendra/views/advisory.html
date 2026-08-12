@@ -1,0 +1,135 @@
+<!-- Farm Advisory Page Template -->
+<div class="view-animate">
+  
+  <div class="advisory-container">
+    
+    <!-- Page Header Header -->
+    <div style="margin-bottom: 40px;">
+      <span class="hero-badge" style="margin-bottom: 12px;">
+        <i class="fa-solid fa-calculator"></i> {{ t('NAV_ADVISORY') }}
+      </span>
+      <h2>{{ t('ADVISORY_TITLE') }}</h2>
+      <p style="color: var(--text-muted); max-width: 700px; margin-top: 8px;">{{ t('ADVISORY_DESC') }}</p>
+    </div>
+    
+    <div class="advisory-grid">
+      
+      <!-- Left side: Calculator & Results Area -->
+      <div class="calc-panel">
+        
+        <form class="calc-form" ng-submit="calculate()">
+          
+          <!-- Input 1: Crop Select -->
+          <div class="form-group">
+            <label for="cropSelect">{{ t('FORM_CROP') }}</label>
+            <select id="cropSelect" ng-model="calc.crop" ng-change="calculate()">
+              <optgroup label="🍇 Fruit Crops & Saplings">
+                <option value="POMEGRANATE">Pomegranate / ದಾಳಿಂಬೆ (ಭಗವಾ)</option>
+                <option value="GRAPES">Grapes / ದ್ರಾಕ್ಷಿ (ಸೋನಾಕಾ/ಮಾಣಿಕ್ ಚಮನ್)</option>
+                <option value="BANANA">Banana / ಬಾಳೆ (G9/Grand Naine)</option>
+                <option value="MANGO">Mango / ಮಾವು (Alphonso/Kesar)</option>
+                <option value="PAPAYA">Papaya / ಪಪ್ಪಾಯಿ (Red Lady)</option>
+                <option value="GUAVA">Guava / ಪೇರಲ (L-49)</option>
+                <option value="TOMATO">Tomato / ಟೊಮೇಟೊ (Hybrid)</option>
+              </optgroup>
+              <optgroup label="🌾 Field & Seed Crops">
+                <option value="COTTON">Cotton / ಹತ್ತಿ</option>
+                <option value="MAIZE">Maize / ಮೆಕ್ಕೆಜೋಳ</option>
+                <option value="JOWAR">Jowar / ಜೋಳ</option>
+                <option value="SUGARCANE">Sugarcane / ಕಬ್ಬು</option>
+                <option value="WHEAT">Wheat / ಗೋಧಿ</option>
+                <option value="SUNFLOWER">Sunflower / ಸೂರ್ಯಕಾಂತಿ</option>
+                <option value="GROUNDNUT">Groundnut / ಕಡಲೆಕಾಯಿ</option>
+                <option value="ONION">Onion / ಈರುಳ್ಳಿ (Bellary/Nasik Red)</option>
+                <option value="CHILLI">Chilli / ಮೆಣಸಿನಕಾಯಿ (Byadgi)</option>
+                <option value="TURMERIC">Turmeric / ಅರಿಶಿನ</option>
+              </optgroup>
+            </select>
+          </div>
+          
+          <!-- Input 2: Land Area (Acres) -->
+          <div class="form-group">
+            <label for="landArea">{{ t('FORM_AREA') }}</label>
+            <input type="number" id="landArea" ng-model="calc.acres" min="0.1" step="0.1" ng-change="calculate()" required>
+          </div>
+          
+          <!-- Input 3: Soil Type -->
+          <div class="form-group form-group-full">
+            <label for="soilType">{{ t('FORM_SOIL') }}</label>
+            <select id="soilType" ng-model="calc.soil" ng-change="calculate()">
+              <option value="BLACK">Black Soil / ಕರಿಮಣ್ಣು (Vijyapura-Kanamadi)</option>
+              <option value="RED">Red Soil / ಕೆಂಪು ಮಣ್ಣು</option>
+              <option value="SANDY">Sandy Loam / ಮರಳು ಮಿಶ್ರಿತ ಮಣ್ಣು</option>
+            </select>
+          </div>
+          
+        </form>
+        
+        <!-- Results Section (Shows dynamically) -->
+        <div class="calc-results" ng-if="results">
+          <h3>
+            <i class="fa-solid fa-square-poll-vertical"></i> 
+            {{ t('RESULT_TITLE') }} {{ results.cropName }} ({{ calc.acres }} Acres)
+          </h3>
+          
+          <div class="results-grid">
+            
+            <!-- Result card 1: Seeds/Saplings quantity -->
+            <div class="result-card">
+              <div class="label"><i class="fa-solid fa-seedling"></i> {{ t('RESULT_SEEDS') }}</div>
+              <div class="value" style="font-size: 1.1rem; word-break: break-word;">{{ results.seedVal }}</div>
+            </div>
+            
+            <!-- Result card 2: Fertilizers (N-P-K) -->
+            <div class="result-card">
+              <div class="label"><i class="fa-solid fa-vial"></i> {{ t('RESULT_NPK') }}</div>
+              <div class="value" style="font-size: 1.05rem; word-break: break-all;">{{ results.npkVal }}</div>
+            </div>
+            
+            <!-- Result card 3: Organic Manure -->
+            <div class="result-card">
+              <div class="label"><i class="fa-solid fa-leaf"></i> {{ t('RESULT_MANURE') }}</div>
+              <div class="value">{{ results.manureVal }}</div>
+            </div>
+            
+          </div>
+          
+          <!-- Soil specific instructions translation helper -->
+          <div class="result-notes">
+            <h4 style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--primary-deep); margin-bottom: 6px;">
+              <i class="fa-solid fa-circle-exclamation"></i> {{ t('RESULT_SOIL_ADVICE') }}
+            </h4>
+            <p style="font-size: 0.9rem; line-height: 1.5; font-style: italic;">
+              {{ lang === 'en' ? results.soilAdviceEn : results.soilAdviceKn }}
+            </p>
+          </div>
+          
+        </div>
+        
+      </div>
+      
+      <!-- Right side: Crop Doctor Pest & Disease Advisory Panel -->
+      <div class="doctor-panel">
+        <h3><i class="fa-solid fa-stethoscope"></i> {{ t('CROP_DOC_TITLE') }}</h3>
+        <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 20px;">
+          {{ t('CROP_DOC_DESC') }}
+        </p>
+        
+        <div class="doctor-item" ng-repeat="doc in cropDoc">
+          <span class="doctor-crop">{{ doc.crop }}</span>
+          <h4 class="doctor-issue">{{ doc.issue }}</h4>
+          <p class="doctor-sol"><i class="fa-solid fa-circle-check" style="color: var(--primary-light);"></i> {{ doc.sol }}</p>
+        </div>
+        
+        <div style="margin-top: 24px; border-top: 1px dashed var(--border-color); padding-top: 20px; font-size: 0.8rem; color: var(--text-muted);">
+          <p>
+            * These recommendations are compiled according to University of Agricultural Sciences (UAS) Dharwad packages of practices and regional horticulture standards.
+          </p>
+        </div>
+      </div>
+      
+    </div>
+    
+  </div>
+
+</div>
